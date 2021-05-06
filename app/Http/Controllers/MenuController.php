@@ -95,6 +95,18 @@ class MenuController extends BaseController
      */
 
     public function getMenuItems() {
-        throw new \Exception('implement in coding task 3');
+        // throw new \Exception('implement in coding task 3');
+
+        $MenuItems = MenuItem::get();
+        $groupedMenuItems = $MenuItems->groupBy('parent_id');
+        $MenuItemsKeyed = $MenuItems->keyBy('id')->sortByDesc('id');
+
+        foreach($groupedMenuItems as $parentKey => $item ) {
+            if ($parentKey == '') continue;
+
+            $MenuItemsKeyed[$parentKey]['children'] = $item;
+        }
+
+        return $MenuItemsKeyed->where('parent_id', null)->values()->toArray();
     }
 }
